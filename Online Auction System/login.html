@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sign in — BidZone</title><link rel="stylesheet" href="styles/style.css"></head>
+<body class="auth-page">
+  <main class="auth-layout"><div class="auth-visual"><a class="brand light" href="index.html"><span class="brand-mark">B</span><span>Bid<span>Zone</span></span></a><div><span class="eyebrow gold-text">THE AUCTION COMMUNITY</span><h1>Good finds<br><em>find good homes.</em></h1><p>Join thousands of curious buyers and independent sellers making every bid count.</p></div><div class="quote">“The thrill of the find, the joy of the win.”</div></div>
+    <section class="auth-card"><div class="auth-card-inner"><a class="mobile-brand brand" href="index.html"><span class="brand-mark">B</span><span>Bid<span>Zone</span></span></a><span class="eyebrow">WELCOME BACK</span><h2>Sign in to BidZone</h2><p class="muted">Your next great find is waiting.</p><div data-setup-message class="setup-message" hidden></div><button id="google-sign-in" class="google-button"><span class="google-g">G</span> Continue with Google</button><div data-notice hidden></div><div class="auth-divider"><span>Secure sign-in powered by Firebase</span></div><p class="auth-footnote">By continuing, you agree to our Terms of Service and Privacy Policy.</p></div></section>
+  </main>
+  <script>
+    // Firebase commonly authorizes localhost by default. Normalize local access
+    // so OAuth does not fail when the Live Server URL uses 127.0.0.1.
+    if (location.hostname === "127.0.0.1") {
+      location.replace(`http://localhost:${location.port}${location.pathname}${location.search}${location.hash}`);
+    }
+  </script>
+  <script type="module">
+    import { finishGoogleRedirect, watchAuth, signInWithGoogle, setNotice, showSetupMessage } from "./scripts/auth.js";
+    const button = document.querySelector("#google-sign-in");
+    finishGoogleRedirect().catch((error) => {
+      console.error("Google redirect sign-in failed:", error);
+      const message = error.code === "auth/unauthorized-domain"
+        ? "Add divyaps3054-hub.github.io, localhost, and 127.0.0.1 in Firebase Authentication → Settings → Authorized domains."
+        : error.message || "Google sign-in could not be completed.";
+      setNotice(message, "error");
+    });
+    watchAuth((user) => { if (user) location.replace(new URLSearchParams(location.search).get("next") || "index.html"); });
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      button.textContent = "Opening Google…";
+      try {
+        await signInWithGoogle();
+      } catch (error) {
+        const message = error.code === "auth/unauthorized-domain"
+          ? "This website address is not authorized for Google Login. In Firebase Console → Authentication → Settings → Authorized domains, add localhost, 127.0.0.1, and divyaps3054-hub.github.io."
+          : error.message || "Sign-in failed.";
+        setNotice(message, "error");
+        button.disabled = false;
+        button.innerHTML = '<span class="google-g">G</span> Continue with Google';
+      }
+    });
+    showSetupMessage();
+  </script>
+</body>
+</html>
