@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BidZone — Live auctions, better finds</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body class="auth-pending">
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">B</span><span>Bid<span>Zone</span></span></a>
+    <nav class="desktop-nav"><a class="active" href="index.html">Marketplace</a><a href="my-bids.html">My bids</a><a href="my-products.html">My products</a></nav>
+    <div class="header-actions"><a class="button gold small" href="add-product.html">+ List an item</a><a class="avatar-link" href="account.html"><img data-user-avatar src="https://ui-avatars.com/api/?name=B&background=16263f&color=fff" alt="Account"></a><button class="menu-toggle" data-menu-toggle="#mobile-nav" aria-label="Open menu">☰</button></div>
+  </header>
+  <nav id="mobile-nav" class="mobile-nav"><a href="index.html">Marketplace</a><a href="my-bids.html">My bids</a><a href="my-products.html">My products</a><a href="account.html">Account</a><button data-logout>Sign out</button></nav>
+  <main>
+    <section class="hero container">
+      <div class="hero-copy"><span class="eyebrow gold-text">THE SMARTER WAY TO BUY & SELL</span><h1>Find the next<br><em>thing you love.</em></h1><p>Bid confidently on unique finds, trusted by a community of passionate collectors and creators.</p><a class="button primary" href="#auctions">Explore live auctions <span>→</span></a></div>
+      <div class="hero-art"><div class="orb"></div><div class="hero-card"><span class="status-pill">Live now</span><div class="hero-watch">◒</div><strong>Discover something<br>worth bidding on.</strong><small>New auctions every day</small></div><div class="hero-stat"><strong>2.4k+</strong><span>active listings</span></div></div>
+    </section>
+    <section id="auctions" class="container marketplace-section">
+      <div class="section-heading"><div><span class="eyebrow">CURATED FOR YOU</span><h2>Live auctions</h2></div><a href="add-product.html" class="text-link">Sell something <span>→</span></a></div>
+      <div data-setup-message class="setup-message" hidden></div>
+      <div class="filter-bar"><label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search auctions, categories, brands…"></label><select id="category-filter"><option value="all">All categories</option><option>Art & Collectibles</option><option>Fashion</option><option>Electronics</option><option>Home & Design</option><option>Sports</option><option>Other</option></select><select id="sort-filter"><option value="ending">Ending soon</option><option value="newest">Recently added</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></div>
+      <div id="product-grid" class="product-grid"><div class="loading-state"><span class="spinner"></span>Loading live auctions…</div></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><a class="brand" href="index.html"><span class="brand-mark">B</span><span>Bid<span>Zone</span></span></a><p>Real-time auctions for things worth finding.</p><span class="muted">© 2026 BidZone</span></div></footer>
+  <script type="module" src="scripts/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function owner() {
+      return signedIn()
+        && resource.data.sellerId == request.auth.uid
+        && request.resource.data.sellerId == resource.data.sellerId;
+    }
+
+    match /users/{userId} {
+      allow read, create, update: if signedIn() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /products/{productId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.sellerId == request.auth.uid
+        && request.resource.data.startingPrice > 0
+        && request.resource.data.currentPrice == request.resource.data.startingPrice
+        && request.resource.data.startTime < request.resource.data.endTime
+        && request.resource.data.endTime > request.time;
+      // Sellers may edit their own listing. A bidder may only change the fields
+      // written by the bid transaction; the bid document is validated below.
+      allow update: if owner()
+        || (signedIn()
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['currentPrice', 'currentBidderId', 'bidCount', 'updatedAt'])
+          && request.resource.data.currentPrice > resource.data.currentPrice
+          && request.resource.data.currentBidderId == request.auth.uid
+          && request.resource.data.bidCount == resource.data.bidCount + 1
+          && resource.data.endTime > request.time);
+      allow delete: if owner();
+    }
+
+    match /bids/{bidId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.bidderId == request.auth.uid
+        && request.resource.data.amount > 0
+        && exists(/databases/$(database)/documents/products/$(request.resource.data.productId))
+        && request.resource.data.amount >
+          get(/databases/$(database)/documents/products/$(request.resource.data.productId)).data.currentPrice
+        && getAfter(/databases/$(database)/documents/products/$(request.resource.data.productId)).data.currentPrice
+          == request.resource.data.amount;
+      allow update, delete: if false;
+    }
+  }
+}
